@@ -27,3 +27,38 @@ class Handler:
     def add(self, note: Note):
         self.notes[str(uuid.uuid4())] = dataclasses.asdict(note)
         print("Заметка добавлена")
+
+    def delete(self, id: str):
+        try:
+            self.notes.pop(id)
+        except KeyError:
+            print("Заметка не найдена")
+        else:
+            print("Заметка удалена")
+
+    def update(self, id: str):
+        title = input("Введите название: ")
+        msg = input("Введите тело: ")
+        
+        try:
+            self.notes[id]['title'] = title
+            self.notes[id]['msg'] = msg
+            self.notes[id]['date'] =  datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        except KeyError:
+            print("Заметка не найдена")
+        else:
+            print("Заметка обновлена")
+
+    def show(self, id: str):
+        note = self.notes.get(id)
+        pprint.pprint(note)
+
+    def showAll(self, isFiltered: bool):
+        if isFiltered == False:
+            pprint.pprint(self.notes)
+        else:
+            dateFilter = input("Введите дату для фильтрации в формате dd/mm/yyyy: ")
+            for k, v in self.notes.items():
+                note = str(self.notes.get(k)["date"]).split(", ")
+                if note[0] == dateFilter:
+                    pprint.pprint(k + ": "+ str(self.notes.get(k)))
